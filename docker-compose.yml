@@ -1,0 +1,29 @@
+services:
+  php_nginx:
+    image: registry.cn-shenzhen.aliyuncs.com/luler/linux_php_nginx:libreoffice
+    restart: always
+    privileged: true
+    ports:
+      - 3322:80
+    volumes:
+      - ./config/nginx/conf:/usr/local/nginx/conf  #nginx配置
+      - ./config/php/etc:/usr/local/php/etc  #php配置
+      - ./config/init.sh:/init.sh  #初始化脚本
+      - ./code/api:/home/wwwroot/api #api代码
+      - ./code/web/dist:/home/wwwroot/web/dist #web代码
+      - ./runtime/wwwlogs:/home/wwwlogs #日志、数据缓存
+      - ./config/supervisor/supervisord.conf:/etc/supervisord.conf #supervisor配置
+      - ./config/supervisor/supervisord.d:/etc/supervisord.d #supervisor配置
+  zincsearch:
+    image: public.ecr.aws/h9e2j3o7/zinc:latest
+    restart: always
+    privileged: true
+    user: root
+    volumes:
+      - ./runtime/zinc_data:/data
+    environment:
+      - DATA_PATH="/data"
+      - ZINC_FIRST_ADMIN_USER=admin
+      - ZINC_FIRST_ADMIN_PASSWORD=zincsearch
+    ports:
+      - 4080:4080
