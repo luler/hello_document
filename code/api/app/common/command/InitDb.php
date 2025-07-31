@@ -29,9 +29,17 @@ class InitDb extends Command
             $config['connections']['temp'] = $temp;
             Config::set($config, 'database');
             Db::connect('temp')->execute('create database if not exists ' . $database_name . ' DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_general_ci');
-            Console::call('migrate:run');
         } elseif ($default == 'sqlite') {
-            Console::call('migrate:run');
+            //判断是否存在数据库文件
+            $database_path = $config['connections']['sqlite']['database'];
+            if (!file_exists($database_path)) {
+                $dir = dirname($database_path);
+                if (!is_dir($dir)) {
+                    mkdir($dir, 0755, true);
+                }
+                file_put_contents($database_path, '');
+            }
         }
+        Console::call('migrate:run');
     }
 }
