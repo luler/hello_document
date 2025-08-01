@@ -11,7 +11,7 @@
 
 ```
 //克隆代码
-git clone xxxx
+git clone https://github.com/luler/hello_document.git
 //进入代码跟目录，使用docker-compose启动项目
 docker-compose up -d
 ```
